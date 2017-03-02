@@ -1,3 +1,31 @@
-<cp-top-toolbar [title]="toolbarTitle" ></cp-top-toolbar>
+<cp-top-toolbar [title]="toolbarTitle"></cp-top-toolbar>
 
 <h1>Welcome to CP2, we are just getting started!</h1>
+
+<h2 *ngIf="!users">
+
+</h2>
+
+<div *ngIf="!users" fxFlexFill [fxLayout]="'row'" fxLayoutAlign="center start">
+  <md-card style="margin: 0;width: 200px;">
+
+    <div fxFlexFill [fxLayout]="'column'" fxLayoutAlign="'center top'">
+      <h3>
+        <fa [name]="'users'"></fa>
+        Loading Users
+      </h3>
+      <h3>
+        <md-spinner></md-spinner>
+      </h3>
+
+    </div>
+  </md-card>
+</div>
+
+<h2 *ngIf="users && users.length < 1"> Log in to see the users! </h2>
+
+<h4 *ngFor="let user of users">
+  {{user.sex}} -- {{user.email}} -- {{user.username}} -- {{user.uid}}
+</h4>
+
+

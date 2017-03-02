@@ -1,9 +1,7 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {AuthService} from "../auth/auth.service";
-import {auditTime} from "rxjs/operator/auditTime";
-import {User} from "../users/user";
 import {MdSnackBar} from "@angular/material";
 import {Router} from "@angular/router";
+import {AngularFire} from "angularfire2";
 
 @Component({
   selector: 'cp-top-toolbar',
@@ -12,26 +10,41 @@ import {Router} from "@angular/router";
 })
 export class TopToolbarComponent implements OnInit {
   @Input()
-  title : string;
+  title: string;
 
-  user: User;
+  user;
 
-  constructor(private auth: AuthService,
+  constructor(private af: AngularFire,
               public loginValidationBar: MdSnackBar,
               private router: Router) {
-    this.user = auth.currentUser();
+
   }
 
-  logout(){
-    this.router.navigate(['/login']).then(() => {
-      this.loginValidationBar.open("You are logged out", "Ok", {
-        duration: 3000,
+  logout() {
+    this.af.auth.logout()
+      .then(() => {
+        this.router.navigate(['/login'])
+          .then(() => {
+            this.loginValidationBar.open("You are logged out", "Ok", {
+              duration: 3000,
+            });
+          })
+      })
+      .catch(err => {
+        this.loginValidationBar.open("Error" + err.message, "Ok", {
+          duration: 3000,
+        });
       });
-    });
+
 
   }
 
   ngOnInit() {
+    this.af.auth.subscribe(user => {
+      if (user) {
+        this.user = user.auth;
+      }
+    });
   }
 
 }
